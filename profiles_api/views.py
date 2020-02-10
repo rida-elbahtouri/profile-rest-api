@@ -1,7 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status,viewsets
+from rest_framework import status,viewsets,filters
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
 from .serializers import HelloSerializer,UserSerializer
 from  .models import UserProfile
 from .permissions import UpdateOwnProfile
@@ -46,3 +48,9 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     authentication_classes = (TokenAuthentication,)
     permission_classes = (UpdateOwnProfile,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields=('First_name','Last_name','email',)
+
+class UserLoginApiVeiw(ObtainAuthToken):
+    """handel creating user authonication tokens"""
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
